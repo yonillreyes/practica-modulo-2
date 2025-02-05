@@ -1,0 +1,26 @@
+practica 1 
+
+sudo dnf clean all
+sudo dnf makecache
+sudo dnf update -y
+sudo dnf upgrade -y
+sudo dnf install -y make git gcc
+git clone https://github.com/aristocratos/bashtop.git
+cd bashtop
+sudo make install
+bashtop
+sudo dnf remove -y bashtop
+sudo dnf autoremove -y
+
+------------------------------------------------------------------------------------------------------------------
+1. sudo systemctl enable cron
+2. sudo systemctl start cron
+3. sudo systemctl status cron
+4. sudo systemctl enable atd
+5. sudo systemctl start atd
+6. sudo systemctl status atd
+7. sudo crontab -e
+8. 0 23 * * * sudo dnf update -y
+9. 0 3 * * 0 /sbin/reboot
+10. echo "rm -rf /tmp/*" | at now + 1 minute
+11. ls /tmp
