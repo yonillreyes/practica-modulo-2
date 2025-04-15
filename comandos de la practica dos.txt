@@ -1,26 +1,206 @@
-practica 1 
+modulo 2 
+Practica 1: 
 
-sudo dnf clean all
-sudo dnf makecache
-sudo dnf update -y
-sudo dnf upgrade -y
-sudo dnf install -y make git gcc
+Actualize los repositorios del sistema (update & Upgrade) y Enumere los repositorios actualmente en uso en su servidor.
+Proceda a buscar la herramienta en el cache de los repositorios a ver si se encuentra disponible.
+Instale la herramienta "Bashtop Resource Monitor" en caso de ser necesario, agregarla al repositorio local (https://es.linux-console.net/?p=438#gsc.tab=0)
+Una vez halla presentado la herramienta anterior, proceda a desinstalarla. eliminando tambien todos los archivos de configuracion 
+Elimine todas las dependencias asociadas a este programa que ya no esten en uso
+
+Practica 2:
+
+Cree un trabajo cron que actualice el sistema todas las tardes a las 11 p.m
+Programe su máquina para que se reinicie todos los domingos a las 3 a.m.
+Cree una tarea programada usando el comando "at" para que elimine el contenido de la carpeta /tmp dentro de 1 minuto. Mostrar el resultado con ls /tmp antes y despues de la ejecucion 
+ Instalar Bashtop manualmente (desde GitHub)
+
+
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+📝 Antes de instalar:
+Necesitamos instalar herramientas de desarrollo esenciales para compilar código desde fuentes.
+
+📦 Paquetes requeridos:
+Make: Para construir el software.
+
+Git: Para clonar el repositorio.
+
+GCC: Compilador de C y C++.
+
+🧱 Comando:
+
+sudo dnf install make git gcc
+🧬 Clonar e instalar Bashtop:
+
+Clona el repositorio:
+
 git clone https://github.com/aristocratos/bashtop.git
-cd bashtop
-sudo make install
-bashtop
-sudo dnf remove -y bashtop
-sudo dnf autoremove -y
 
-------------------------------------------------------------------------------------------------------------------
-1. sudo systemctl enable cron
-2. sudo systemctl start cron
-3. sudo systemctl status cron
-4. sudo systemctl enable atd
-5. sudo systemctl start atd
-6. sudo systemctl status atd
-7. sudo crontab -e
-8. 0 23 * * * sudo dnf update -y
-9. 0 3 * * 0 /sbin/reboot
-10. echo "rm -rf /tmp/*" | at now + 1 minute
-11. ls /tmp
+
+Entra al directorio clonado:
+
+cd bashtop
+
+Ejecuta la instalación:
+
+sudo make install
+
+
+Ejecuta la herramienta:
+
+bashtop
+🔹 4. Desinstalar Bashtop y borrar configuración
+🧼 Pasos:
+
+Desde el directorio bashtop, ejecuta:
+
+sudo make uninstall
+
+
+Elimina el directorio:
+
+
+cd ..
+sudo rm -rf bashtop
+🔹
+ 5. Eliminar dependencias no utilizadas
+🧹 Limpieza del sistema:
+
+Elimina todas las dependencias huérfanas que ya no estén siendo utilizadas.
+
+sudo dnf autoremove
+
+
+✅ Comandos adicionales útiles
+Comando	Descripción
+
+sudo dnf history	Ver el historial de transacciones de instalación/desinstalación.
+sudo dnf config-manager --set-enabled <repositorio>	Habilita un repositorio adicional.
+
+
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+pracitca 2
+
+Concepto Básico:
+
+Cron es un demonio que permite programar tareas que se ejecuten automáticamente a
+intervalos regulares. Los trabajos se definen en un archivo de “crontab”.
+
+Pasos a Seguir:
+
+Abrir el archivo crontab para editar
+En este ejemplo, lo configuraremos para el usuario root (ya que actualizar el sistema requiere permisos administrativos).
+Ejecuta el siguiente comando:
+
+sudo crontab -e
+
+Nota: Esto abrirá el editor de texto configurado (puede ser vi, nano, etc.).
+
+Agregar la línea de la tarea
+Dentro del archivo, agrega la siguiente línea:
+
+
+0 23 * * * /usr/bin/dnf update -y
+
+Explicación de la línea:
+
+** 0 23 * * * **
+
+0: minuto 0
+
+23: hora 23 (11 p.m.)
+
+*:todos los dias del mes
+*:todos los meses del mes
+*:todos los dias de la semana 
+/usr/bin/dnf update -y: Este comando actualiza los paquetes instalados. El parámetro -y indica que responda "sí" a todas las preguntas, haciendo la actualización de forma no interactiva.
+
+Ruta completa: Es recomendable usar la ruta completa del comando (/usr/bin/dnf) para evitar problemas con el PATH en el entorno cron.
+
+Guardar y salir del editor
+Una vez guardada la línea, el demonio cron leerá el nuevo trabajo y se ejecutará a las 11 p.m. todos los días.
+
+Ejercicio 2: Reiniciar la máquina todos los domingos a las 3 a.m.
+
+Concepto Básico
+
+En cron se puede programar el reinicio de la máquina usando el comando reboot. Dado que el reinicio afecta al sistema, es necesario que el trabajo se ejecute como root.
+
+Pasos a Seguir
+
+Abrir el crontab de root (si no lo tienes abierto ya del ejercicio anterior)
+
+
+sudo crontab -e
+
+Agregar la siguiente línea:
+
+
+0 3 * * 0 /sbin/reboot
+Explicación de la línea: 0 3 * * 0
+
+0: minuto 0
+
+3: hora 3 (3 a.m.)
+
+* *: todos los días del mes y todos los meses
+
+0: representa el domingo (en cron, el domingo puede ser 0 o 7, en este caso usamos 0).
+
+/sbin/reboot
+
+Comando para reiniciar el sistema. Nuevamente, se utiliza la ruta completa.
+
+Guardar y salir
+El trabajo quedará programado y se reiniciará el sistema automáticamente cada domingo a las 3 a.m.
+
+
+UN COMANDO PARA VER SI LOS CRONTAB SE ESTAN EJECUTANDO ES: sudo tail -f /var/log/cron
+
+
+
+
+
+
+Ejercicio 3: Tarea programada con "at" para eliminar el contenido de /tmp en 1 minuto Concepto Básico
+El comando at permite programar tareas únicas que se ejecutan en un momento específico, a diferencia de cron que son tareas periódicas.
+
+Pasos a Seguir
+Ver el contenido de /tmp antes de ejecutar la tarea
+Para comprobar el estado inicial:
+
+
+ls -l /tmp
+Observa los archivos y directorios listados.
+
+Programar la tarea con at
+Ejecuta el siguiente comando para programar la eliminación de los archivos dentro de /tmp dentro de 1 minuto:
+
+
+echo "rm -rf /tmp/*" | at now + 1 minute
+
+Explicación:
+
+echo "rm -rf /tmp/*": Prepara el comando a ejecutar.
+
+El operador: | pasa este comando a at.
+
+at now + 1 minute indica que la tarea se ejecutará 1 minuto después de la ejecución del comando.
+
+Verificar que la tarea se ha programado
+Puedes listar las tareas pendientes con:
+
+atq
+
+Esto mostrará el ID de la tarea y la hora de ejecución.
+
+Esperar 1 minuto y luego verificar el contenido de /tmp
+Después de que haya transcurrido el tiempo, vuelve a listar el contenido de /tmp:
+
+
+
+también algo importante es que tenemos que estar en sudo su para ejecutar comandos que necesitan este permiso por ejemplo el comando reboot tenemos que ejecutarlo en superusuario
